@@ -1,0 +1,99 @@
+{% extends "master/base.html" %}
+{% block title %}Profile — ResumeMaker{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+<div class="row g-4">
+
+  <!-- Left Side: User Info -->
+  <div class="col-lg-4">
+    <div class="dark-card p-4 text-center">
+      <div class="mb-3" style="position:relative; display:inline-block;">
+        {% if request.user.profile.image %}
+          <img src="{{ request.user.profile.image.url }}" style="width:100px; height:100px; border-radius:50%; object-fit:cover; border:3px solid #e63946;">
+        {% else %}
+          <div style="width:100px; height:100px; border-radius:50%; background:#1a0000; border:3px solid #e63946; display:flex; align-items:center; justify-content:center; margin:0 auto;">
+            <i class="bi bi-person-fill" style="font-size:2.5rem; color:#e63946;"></i>
+          </div>
+        {% endif %}
+      </div>
+
+      <h5 class="fw-bold mb-1">{{ request.user.profile.full_name|default:request.user.username }}</h5>
+      <p style="color:#e63946; font-size:13px;" class="mb-1">@{{ request.user.username }}</p>
+      
+      <div style="border-top:1px solid #222;" class="my-3"></div>
+
+      <a href="{% url 'update_profile' %}" class="btn btn-red w-100 mt-2"><i class="bi bi-pencil me-2"></i>Edit Profile</a>
+      <a href="{% url 'change_password' %}" class="btn btn-outline-red w-100 mt-2"><i class="bi bi-lock me-2"></i>Password</a>
+    </div>
+  </div>
+
+  <!-- Right Side: Stats & Actions -->
+  <div class="col-lg-8">
+    <!-- Stats Row -->
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-md-3">
+        <div class="dark-card p-3 text-center">
+          <i class="bi bi-mortarboard fs-3 mb-2 d-block" style="color:#e63946;"></i>
+          <div class="fw-bold fs-5">{{ request.user.educations.count }}</div>
+          <div style="color:#6b7280; font-size:12px;">Education</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="dark-card p-3 text-center">
+          <i class="bi bi-briefcase fs-3 mb-2 d-block" style="color:#e63946;"></i>
+          <div class="fw-bold fs-5">{{ request.user.experiences.count }}</div>
+          <div style="color:#6b7280; font-size:12px;">Experience</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="dark-card p-3 text-center">
+          <i class="bi bi-lightning fs-3 mb-2 d-block" style="color:#e63946;"></i>
+          <div class="fw-bold fs-5">{{ request.user.skills.count }}</div>
+          <div style="color:#6b7280; font-size:12px;">Skills</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="dark-card p-3 text-center">
+          <i class="bi bi-file-text fs-3 mb-2 d-block" style="color:#e63946;"></i>
+          <div class="fw-bold fs-5">{{ request.user.resumes.count }}</div>
+          <div style="color:#6b7280; font-size:12px;">Resumes</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Add Section (This is what makes the checkboxes appear!) -->
+    <div class="dark-card p-4 mb-4">
+      <h6 class="fw-bold mb-3"><i class="bi bi-plus-circle me-2" style="color:#e63946;"></i>Add Information</h6>
+      <div class="d-flex flex-wrap gap-2">
+        <a href="{% url 'add_education' %}" class="btn btn-outline-red btn-sm"><i class="bi bi-plus-lg"></i> Education</a>
+        <a href="{% url 'add_experience' %}" class="btn btn-outline-red btn-sm"><i class="bi bi-plus-lg"></i> Experience</a>
+        <a href="{% url 'add_skill' %}" class="btn btn-outline-red btn-sm"><i class="bi bi-plus-lg"></i> Skill</a>
+        <a href="{% url 'add_project' %}" class="btn btn-outline-red btn-sm"><i class="bi bi-plus-lg"></i> Project</a>
+      </div>
+    </div>
+
+    <!-- Recent Resumes -->
+    <div class="dark-card p-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 class="fw-bold mb-0">Recent Resumes</h6>
+        <a href="{% url 'dashboard_page' %}" style="color:#e63946; font-size:13px; text-decoration:none;">View All →</a>
+      </div>
+
+      {% for resume in request.user.resumes.all|slice:":3" %}
+      <div class="d-flex align-items-center justify-content-between p-3 mb-2" style="background:#161616; border-radius:8px; border:1px solid #222;">
+        <div>
+          <div class="fw-medium" style="font-size:14px;">{{ resume.title }}</div>
+          <div style="color:#6b7280; font-size:12px;">{{ resume.template_choice|title }} · {{ resume.created_at|date:"d M Y" }}</div>
+        </div>
+        <a href="{% url 'resume_view' resume.id %}" class="btn btn-outline-red btn-sm"><i class="bi bi-eye"></i></a>
+      </div>
+      {% empty %}
+      <div class="text-center py-4 text-muted">No resumes found. <a href="{% url 'create_resume' %}" style="color:#e63946;">Create one →</a></div>
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+</div>
+{% endblock %}

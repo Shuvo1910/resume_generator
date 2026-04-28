@@ -1,0 +1,51 @@
+{% extends "master/base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="fw-bold">Welcome back, {{ user.username|title }}!</h2>
+            <p class="text-muted">Manage your resumes and create new ones below.</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <a href="{% url 'create_resume' %}" class="btn btn-red px-4 py-2">
+                <i class="bi bi-plus-lg me-2"></i>New Resume
+            </a>
+        </div>
+    </div>
+
+    <!-- Resume Grid -->
+    <div class="row">
+        {% for resume in resumes %}
+        <div class="col-md-4 mb-4">
+            <div class="dark-card p-4 h-100">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <h5 class="fw-bold text-white mb-0">{{ resume.title }}</h5>
+                    <span class="badge bg-secondary small">{{ resume.template_choice|title }}</span>
+                </div>
+                
+                <div class="mt-auto">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'resume_view' resume.id %}" class="btn btn-outline-red btn-sm">
+                            <i class="bi bi-eye me-1"></i>View
+                        </a>
+                        <a href="{% url 'select_sections' resume.id %}" class="btn btn-red btn-sm">
+                            <i class="bi bi-pencil-square me-1"></i>Edit Sections
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <div class="dark-card p-5">
+                <i class="bi bi-file-earmark-plus display-1 text-muted mb-3"></i>
+                <h4>No Resumes Found</h4>
+                <p class="text-muted">Start building your first professional resume today!</p>
+                <a href="{% url 'create_resume' %}" class="btn btn-red mt-2">Get Started</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

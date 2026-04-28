@@ -1,0 +1,38 @@
+{% extends "master/base.html" %}
+
+{% block title %}My Resumes | ResumeMaker{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">My Resumes</h2>
+        <a href="{% url 'create_resume' %}" class="btn btn-red">
+            <i class="bi bi-plus-lg me-2"></i>Create New
+        </a>
+    </div>
+
+    <div class="row">
+        {% for resume in resumes %}
+        <div class="col-md-4 mb-4">
+            <div class="dark-card p-4">
+                <h4 class="mb-1 text-white">{{ resume.title }}</h4>
+                <p class="small text-muted mb-3">Template: {{ resume.template_choice|title }}</p>
+                
+                <div class="d-grid gap-2">
+                    <a href="{% url 'select_sections' resume.id %}" class="btn btn-outline-light btn-sm">
+                        <i class="bi bi-pencil-square me-1"></i> Edit Sections
+                    </a>
+                    <a href="{% url 'resume_view' resume.id %}" class="btn btn-red btn-sm">
+                        <i class="bi bi-eye me-1"></i> View Resume
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <p class="text-muted">You haven't created any resumes yet.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

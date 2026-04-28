@@ -1,0 +1,83 @@
+{% extends "master/base.html" %}
+
+{% block content %}
+<style>
+  .dark-card { background: #111111; border-radius: 15px; border: 1px solid #222; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+  
+  /* Standard Inputs (Text, Email, Select) */
+  .form-fields input:not([type="checkbox"]), 
+  .form-fields select, 
+  .form-fields textarea {
+    width: 100%; padding: 10px 15px; margin-top: 5px; background: #1a1a1a;
+    border: 1px solid #222; border-radius: 8px; color: white; outline: none;
+    display: block;
+  }
+
+  /* Specific Styling for Checkbox Lists (Select Sections) */
+  .form-fields ul { list-style: none; padding: 0; margin: 0; }
+  .form-fields li { 
+    background: #161616; padding: 8px 12px; border-radius: 6px; 
+    margin-bottom: 5px; border: 1px solid #222; color: #9ca3af;
+  }
+  .form-fields input[type="checkbox"] { 
+    margin-right: 10px; transform: scale(1.2); accent-color: #e63946; 
+  }
+
+  .empty-notice {
+    background: #1a0a0a; border: 1px dashed #4a1a1a; 
+    border-radius: 8px; padding: 10px; margin-top: 5px;
+  }
+</style>
+
+<div class="container">
+  <div class="row justify-content-center align-items-center" style="min-height: 85vh;">
+    <div class="col-12 col-sm-10 col-md-8 col-lg-6"> <!-- Slightly wider for checkboxes -->
+      <div class="dark-card p-4 p-md-5">
+        
+        <div class="text-center mb-4">
+          <div class="display-5 mb-2" style="color:#e63946;"><i class="bi bi-file-earmark-person-fill"></i></div>
+          <h3 class="fw-bold">{% block form_title %}{{ form_title }}{% endblock %}</h3>
+          <p class="small" style="color:#9ca3af;">{% block form_subtitle %}{% endblock %}</p>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="form-fields">
+            {% block form_body %}
+              {% for field in form_data %}
+                <div class="mb-4">
+                  <label class="fw-bold d-block mb-1" style="color: #ffffff;">{{ field.label }}</label>
+                  
+                  <div class="field-container">
+                    {{ field }}
+                  </div>
+
+                  {# Display notice if a user-specific list (Education/Skills) is empty #}
+                  {% if field.field.queryset is not None and not field.field.queryset.exists %}
+                    <div class="empty-notice">
+                      <small class="text-muted">
+                        <i class="bi bi-exclamation-triangle me-1"></i> No {{ field.label|lower }} records found.
+                        <a href="{% url 'profile_page' %}" style="color: #e63946; text-decoration: none;">Add to Profile →</a>
+                      </small>
+                    </div>
+                  {% endif %}
+
+                  {% if field.errors %}
+                    <div class="text-danger x-small mt-1">{{ field.errors }}</div>
+                  {% endif %}
+                </div>
+              {% endfor %}
+            {% endblock %}
+          </div>
+
+          <button type="submit" class="btn btn-red w-100 py-2 mt-3">
+            <i class="bi bi-check-circle-fill me-2"></i>{% block btn_text %}{{ btn_name|default:"Submit" }}{% endblock %}
+          </button>
+        </form>
+
+        {% block extra_link %}{% endblock %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

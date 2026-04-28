@@ -1,0 +1,89 @@
+{% extends "master/base.html" %}
+
+{% block extra_css %}
+<style>
+    .resume-paper {
+        background: white; color: #333; padding: 50px; border-radius: 4px;
+        min-height: 297mm; box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+    .resume-paper h1 { color: #000; border-bottom: 2px solid #eee; padding-bottom: 5px; text-transform: lowercase; }
+    .section-title { color: #e63946; font-weight: bold; text-transform: uppercase; margin-top: 25px; border-bottom: 1px solid #eee; }
+    
+    @media print {
+        body { background: white; }
+        .navbar, .btn, .no-print { display: none !important; }
+        .resume-paper { box-shadow: none; padding: 0; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="text-end mb-3 no-print">
+        <button onclick="window.print()" class="btn btn-red">
+            <i class="bi bi-printer me-2"></i>Print / Save as PDF
+        </button>
+    </div>
+
+    <div class="resume-paper mx-auto" style="max-width: 800px;">
+        <!-- Header -->
+        <div class="text-center mb-4">
+            <h1 class="display-4 fw-bold">{{ resume.user.username }}</h1>
+            <p class="lead">
+                {{ resume.user.email }} | {{ resume.user.profile.phone|default:"" }}<br>
+                {{ resume.user.profile.address|default:"" }}
+            </p>
+        </div>
+
+        <!-- Education -->
+        {% if resume.section.education.all %}
+        <h5 class="section-title">Education</h5>
+        {% for edu in resume.section.education.all %}
+        <div class="mb-3">
+            <div class="d-flex justify-content-between">
+                <strong>{{ edu.institution }}</strong>
+                <span>{{ edu.start_year }} - {{ edu.end_year }}</span>
+            </div>
+            <div>{{ edu.degree }}</div>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <!-- Experience -->
+        {% if resume.section.experience.all %}
+        <h5 class="section-title">Experience</h5>
+        {% for exp in resume.section.experience.all %}
+        <div class="mb-3">
+            <div class="d-flex justify-content-between">
+                <strong>{{ exp.company_name }}</strong>
+                <span>{{ exp.start_date|date:"Y" }} - {{ exp.end_date|date:"Y" }}</span>
+            </div>
+            <div>{{ exp.role }}</div>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <!-- Skills -->
+        {% if resume.section.skills.all %}
+        <h5 class="section-title">Skills</h5>
+        <div class="d-flex flex-wrap gap-2 mt-2">
+            {% for skill in resume.section.skills.all %}
+                <span class="badge bg-dark">{{ skill.skill_name }} ({{ skill.proficiency }})</span>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Projects -->
+        {% if resume.section.projects.all %}
+        <h5 class="section-title">Projects</h5>
+        {% for proj in resume.section.projects.all %}
+        <div class="mb-3">
+            <strong>{{ proj.project_name }}</strong>
+            <p class="mb-1">{{ proj.description }}</p>
+            {% if proj.link %}<small class="text-muted">{{ proj.link }}</small>{% endif %}
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

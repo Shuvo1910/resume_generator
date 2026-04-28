@@ -1,0 +1,23 @@
+{% extends "master/base-form.html" %}
+
+{% block title %}Login | Resume Maker{% endblock %}
+{% block form_title %}Welcome Back{% endblock %}
+{% block form_subtitle %}Login to your account{% endblock %}
+{% block btn_text %}Login Now{% endblock %}
+
+{% block form_body %}
+  <div class="mb-3">
+    <label class="form-label">Username</label>
+    <input type="text" name="username" class="form-control" placeholder="Enter username" required>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Password</label>
+    <input type="password" name="password" class="form-control" placeholder="Enter password" required>
+  </div>
+{% endblock %}
+
+{% block extra_link %}
+<p class="text-center mt-4 mb-0" style="color:#9ca3af;">
+  Don't have an account? <a href="{% url 'register_page' %}" style="color:#e63946; text-decoration:none;">Register here</a>
+</p>
+{% endblock %}
